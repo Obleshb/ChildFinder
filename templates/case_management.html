@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}ChildFinder - Case Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Case Management</h2>
+            <p class="lead">Review and manage reported cases</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Active Cases</h5>
+                    <h2 class="mb-0">{{ active_cases|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Found Children</h5>
+                    <h2 class="mb-0">{{ found_cases|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Reviews</h5>
+                    <h2 class="mb-0">{{ pending_matches|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Search Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Search Database with Image</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('main.search_database') }}" method="POST" enctype="multipart/form-data">
+                <div class="row align-items-end">
+                    <div class="col-md-6">
+                        <label for="search_image" class="form-label">Upload Image to Search</label>
+                        <input type="file" class="form-control" id="search_image" name="search_image" accept="image/*" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="confidence" class="form-label">Minimum Confidence (%)</label>
+                        <input type="number" class="form-control" id="confidence" name="confidence" min="1" max="100" value="60">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#active">Active Cases</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#matches">Potential Matches</a>
+                </li>
+                {% if search_results %}
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#search">Search Results</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <!-- Active Cases Tab -->
+                <div class="tab-pane fade show active" id="active">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Case ID</th>
+                                    <th>Child Name</th>
+                                    <th>Age</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for case in active_cases %}
+                                <tr>
+                                    <td>#{{ case.id }}</td>
+                                    <td>{{ case.child_name }}</td>
+                                    <td>{{ case.age }}</td>
+                                    <td>{{ case.location }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'warning' if case.status == 'open' else 'success' }}">
+                                            {{ case.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('main.case_detail', case_id=case.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Potential Matches Tab -->
+                <div class="tab-pane fade" id="matches">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Match ID</th>
+                                    <th>Case ID</th>
+                                    <th>Confidence</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for match in pending_matches %}
+                                <tr>
+                                    <td>#{{ match.id }}</td>
+                                    <td>#{{ match.case_id }}</td>
+                                    <td>{{ "%.2f"|format(match.confidence_score * 100) }}%</td>
+                                    <td>
+                                        <span class="badge bg-warning">{{ match.status }}</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-success" 
+                                                onclick="reviewMatch({{ match.id }})">Review</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Search Results Tab -->
+                {% if search_results %}
+                <div class="tab-pane fade" id="search">
+                    <div class="row">
+                        {% for result in search_results %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Match #{{ loop.index }}</h5>
+                                    <span class="badge bg-primary">{{ "%.2f"|format(result.confidence * 100) }}% Match</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Case Information</h6>
+                                            <p><strong>Case ID:</strong> #{{ result.case.id }}</p>
+                                            <p><strong>Child Name:</strong> {{ result.case.child_name }}</p>
+                                            <p><strong>Age:</strong> {{ result.case.age }}</p>
+                                            <p><strong>Missing Since:</strong> {{ result.case.date_missing.strftime('%Y-%m-%d') }}</p>
+                                            <p><strong>Last Seen:</strong> {{ result.case.location }}</p>
+                                            <p><strong>Description:</strong> {{ result.case.description }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6>Case Photo</h6>
+                                                <img src="{{ url_for('static', filename=result.case.image_path) }}" 
+                                                     class="img-fluid rounded" alt="Case Photo">
+                                            </div>
+                                            <div class="mb-3">
+                                                <h6>Search Photo</h6>
+                                                <img src="{{ url_for('static', filename=result.match.found_image_path) }}" 
+                                                     class="img-fluid rounded" alt="Search Photo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <a href="{{ url_for('main.case_detail', case_id=result.case.id) }}" 
+                                           class="btn btn-primary">View Full Case Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

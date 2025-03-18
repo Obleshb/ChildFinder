@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}ChildFinder - Home{% endblock %}
+
+{% block content %}
+<div class="hero py-5 text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">Help Us Find Missing Children</h1>
+        <p class="lead mb-4">Together we can make a difference in bringing children back home safely.</p>
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">Report a Case</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">Authority Login</a>
+            {% else %}
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1542317785-ae7b6fa20f55" class="card-img-top" alt="Missing Children Awareness">
+                <div class="card-body">
+                    <h5 class="card-title">Report Missing Children</h5>
+                    <p class="card-text">Quick and secure reporting system for missing children cases.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1485056616736-b0840bdf4732" class="card-img-top" alt="Authority Collaboration">
+                <div class="card-body">
+                    <h5 class="card-title">Authority Collaboration</h5>
+                    <p class="card-text">Working closely with law enforcement to expedite searches.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1502802619459-7448b7c07b52" class="card-img-top" alt="Community Support">
+                <div class="card-body">
+                    <h5 class="card-title">Community Support</h5>
+                    <p class="card-text">Join our network of concerned citizens helping to find missing children.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-dark py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2>How It Works</h2>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><i class="bi bi-1-circle me-2"></i>Register and report a missing child case</li>
+                    <li class="mb-3"><i class="bi bi-2-circle me-2"></i>Our AI system processes the image</li>
+                    <li class="mb-3"><i class="bi bi-3-circle me-2"></i>Matches are sent to authorities</li>
+                    <li class="mb-3"><i class="bi bi-4-circle me-2"></i>Quick response and investigation</li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1510772314292-9c0ad420734a" class="img-fluid rounded" alt="Process Diagram">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

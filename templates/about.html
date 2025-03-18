@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}ChildFinder - About Us{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Mission Section -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Our Mission</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="lead text-center">
+                            To leverage cutting-edge technology and community collaboration in locating missing children
+                            and reuniting them with their families.
+                        </p>
+                        <p class="text-center">
+                            We believe that every child deserves to be safe and every family deserves peace of mind.
+                            Through our innovative face recognition technology and dedicated network of authorities,
+                            we work tirelessly to make this vision a reality.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Our Team</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Team Member">
+                        <h5 class="card-title">Dr. Sarah Johnson</h5>
+                        <p class="card-subtitle mb-2 text-muted">Founder & Director</p>
+                        <p class="card-text">Expert in child safety and digital forensics with 15 years of experience.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Team Member">
+                        <h5 class="card-title">Michael Chen</h5>
+                        <p class="card-subtitle mb-2 text-muted">Technical Lead</p>
+                        <p class="card-text">AI and machine learning specialist focused on facial recognition technology.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Team Member">
+                        <h5 class="card-title">Emma Rodriguez</h5>
+                        <p class="card-subtitle mb-2 text-muted">Community Coordinator</p>
+                        <p class="card-text">Liaison between law enforcement agencies and families of missing children.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        How does the face recognition system work?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Our system uses advanced AI algorithms to analyze facial features and match them against our database
+                        of reported missing children. The technology considers multiple facial points and can account for
+                        age progression and different angles.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        How can I report a missing child?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        First, register an account on our platform. Once registered, you can submit a report with the child's
+                        details and recent photographs. The case will be immediately visible to registered law enforcement
+                        agencies and will be added to our database for automated matching.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        How secure is my information?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        We employ industry-standard encryption and security measures to protect all data. Access to sensitive
+                        information is strictly controlled and only available to verified law enforcement authorities.
+                        All data handling complies with relevant privacy laws and regulations.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        What happens when a potential match is found?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        When our system identifies a potential match, it immediately notifies relevant authorities who will
+                        verify the match and take appropriate action. The reporting family will be contacted through official
+                        channels once the match is confirmed by authorities.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

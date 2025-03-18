@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}ChildFinder - Report Case{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Report Missing Child</h2>
+                    <form method="POST" enctype="multipart/form-data" id="reportCaseForm">
+                        {{ form.hidden_tag() }}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="child_name" class="form-label">Child's Name</label>
+                                {{ form.child_name(class="form-control") }}
+                                {% for error in form.child_name.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="age" class="form-label">Age</label>
+                                {{ form.age(class="form-control") }}
+                                {% for error in form.age.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12">
+                                <label for="location" class="form-label">Last Known Location</label>
+                                {{ form.location(class="form-control") }}
+                                {% for error in form.location.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="date_missing" class="form-label">Date Missing</label>
+                                {{ form.date_missing(class="form-control") }}
+                                {% for error in form.date_missing.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12">
+                                <label for="description" class="form-label">Description</label>
+                                {{ form.description(class="form-control", rows="4") }}
+                                {% for error in form.description.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12">
+                                <label for="image" class="form-label">Upload Photo</label>
+                                {{ form.image(class="form-control") }}
+                                {% for error in form.image.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                                <div class="form-text">Please upload a clear, recent photo of the child.</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                        Submit Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

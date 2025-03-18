@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}ChildFinder - Upload Found Child Image{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Upload Found Child Image</h2>
+                    <p class="text-center mb-4">Upload an image of a found child to check for matches in our database.</p>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Upload Photo</label>
+                            {{ form.image(class="form-control") }}
+                            {% for error in form.image.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                            <div class="form-text">Please upload a clear, front-facing photo.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location Found</label>
+                            {{ form.location(class="form-control", placeholder="Enter the location where the child was found") }}
+                            {% for error in form.location.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Upload and Check for Matches
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

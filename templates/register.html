@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}ChildFinder - Register{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Register</h2>
+                    <div class="mb-4">
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="userType" id="userRadio" checked>
+                            <label class="btn btn-outline-primary" for="userRadio">Register as User</label>
+
+                            <input type="radio" class="btn-check" name="userType" id="authorityRadio">
+                            <label class="btn btn-outline-primary" for="authorityRadio">Register as Authority</label>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            {{ form.username(class="form-control", placeholder="Choose a username") }}
+                            {% for error in form.username.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            {{ form.email(class="form-control", placeholder="Enter your email") }}
+                            {% for error in form.email.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            {{ form.password(class="form-control", placeholder="Choose a password") }}
+                            {% for error in form.password.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="password2" class="form-label">Confirm Password</label>
+                            {{ form.password2(class="form-control", placeholder="Confirm your password") }}
+                            {% for error in form.password2.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3 form-check d-none" id="authorityCheck">
+                            {{ form.is_authority(class="form-check-input") }}
+                            <label class="form-check-label" for="is_authority">Register as Authority</label>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary">Already have an account? Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userRadio = document.getElementById('userRadio');
+    const authorityRadio = document.getElementById('authorityRadio');
+    const authorityCheck = document.getElementById('authorityCheck');
+    const isAuthorityInput = document.querySelector('input[name="is_authority"]');
+
+    function updateUserType() {
+        authorityCheck.classList.toggle('d-none', userRadio.checked);
+        isAuthorityInput.checked = authorityRadio.checked;
+    }
+
+    userRadio.addEventListener('change', updateUserType);
+    authorityRadio.addEventListener('change', updateUserType);
+});
+</script>
+{% endblock %}
