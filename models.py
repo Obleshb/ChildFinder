@@ -18,6 +18,9 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+from app import db
+from datetime import datetime
+
 class Case(db.Model):
     __tablename__ = 'missing_case'
     id = db.Column(db.Integer, primary_key=True)
@@ -28,10 +31,16 @@ class Case(db.Model):
     description = db.Column(db.Text)
     image_path = db.Column(db.String(255))
     status = db.Column(db.String(20), default='open')
+
+    
     reporter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    reporter_name = db.Column(db.String(100), nullable=False, default="Unknown")
+    reporter_phone = db.Column(db.String(20), nullable=False, default="0000000000")
+    reporter_relation = db.Column(db.String(50), nullable=False, default="Unknown")
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    matches = db.relationship('MatchResult', backref='case', lazy=True)
+
 
 class MatchResult(db.Model):
     __tablename__ = 'match_result'

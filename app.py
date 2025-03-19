@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase
 from dotenv import load_dotenv  # Import dotenv
+from flask import Flask, render_template, request, redirect, flash
+from flask_mail import Mail, Message
 
 # Load environment variables
 load_dotenv()
@@ -49,6 +51,8 @@ from routes import main_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
+
+
 
 # Create tables if they don't exist
 with app.app_context():

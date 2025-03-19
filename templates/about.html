@@ -30,38 +30,61 @@
     <section class="mb-5">
         <h2 class="text-center mb-4">Our Team</h2>
         <div class="row">
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body text-center">
-                        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Team Member">
-                        <h5 class="card-title">Dr. Sarah Johnson</h5>
+                        <img src="{{ url_for('static', filename='pictures/myphoto.jpg') }}" 
+                             class="rounded-circle mb-3 img-fluid" 
+                             alt="Team Member" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <h5 class="card-title">Mr. Obalesha B</h5>
                         <p class="card-subtitle mb-2 text-muted">Founder & Director</p>
                         <p class="card-text">Expert in child safety and digital forensics with 15 years of experience.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body text-center">
-                        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Team Member">
-                        <h5 class="card-title">Michael Chen</h5>
+                        <img src="{{ url_for('static', filename='pictures/Varsha.jpg') }}" 
+                             class="rounded-circle mb-3 img-fluid" 
+                             alt="Team Member" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <h5 class="card-title">Varsha M</h5>
                         <p class="card-subtitle mb-2 text-muted">Technical Lead</p>
                         <p class="card-text">AI and machine learning specialist focused on facial recognition technology.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body text-center">
-                        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Team Member">
-                        <h5 class="card-title">Emma Rodriguez</h5>
+                        <img src="{{ url_for('static', filename='pictures/Riza.jpg') }}" 
+                             class="rounded-circle mb-3 img-fluid" 
+                             alt="Team Member" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <h5 class="card-title">Riza Riyas Abdul</h5>
                         <p class="card-subtitle mb-2 text-muted">Community Coordinator</p>
                         <p class="card-text">Liaison between law enforcement agencies and families of missing children.</p>
                     </div>
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <img src="{{ url_for('static', filename='pictures/bilal.png') }}" 
+                             class="rounded-circle mb-3 img-fluid" 
+                             alt="Team Member" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <h5 class="card-title">Mr. P A Bilal</h5>
+                        <p class="card-subtitle mb-2 text-muted">Community Member</p>
+                        <p class="card-text">Expert in child safety and digital forensics with 15 years of experience.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+    
 
     <!-- FAQ Section -->
     <section class="mb-5">

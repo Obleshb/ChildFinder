@@ -39,22 +39,28 @@ main {
 
 /* Hero section */
 .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-                url('https://images.unsplash.com/photo-1557081999-0ea3e23579d2');
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url("/static/pictures/Home.jpg");
     background-size: cover;
     background-position: center;
+    height: 70vh;
     color: white;
-    padding: 6rem 0;
 }
 
-/* Card customization */
-.card {
-    transition: transform 0.2s;
+
+/* Buttons */
+.btn-lg {
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 10px;
 }
 
-.card:hover {
-    transform: translateY(-5px);
+/* Button hover effect */
+.btn-warning:hover, .btn-outline-light:hover, .btn-success:hover {
+    transform: scale(1.05);
+    transition: 0.3s;
 }
+
 
 /* Loading overlay */
 .loading-overlay {
