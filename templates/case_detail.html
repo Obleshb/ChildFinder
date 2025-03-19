@@ -16,8 +16,9 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-4">
-                <img src="{{ url_for('static', filename=case.image_path) }}" 
-                     class="card-img-top" alt="{{ case.child_name }}">
+                <img src="{{ url_for('uploaded_file', filename=case.image_path) }}" class="card-img-top img-fluid" alt="{{ case.child_name }}"
+                style="height: 250px; object-fit: cover;">
+
                 <div class="card-body">
                     <h5 class="card-title">Child Information</h5>
                     <p class="card-text">
@@ -49,8 +50,7 @@
                         <div class="match-item mb-3 p-3 border rounded">
                             <div class="row align-items-center">
                                 <div class="col-md-3">
-                                    <img src="{{ url_for('uploaded_file', filename=case.image_path) }}">
-                                         class="img-fluid rounded" alt="Found Image">
+                                    <img src="{{ url_for('uploaded_file', filename=case.image_path) }}" class="img-fluid rounded" alt="Found Image">
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1">

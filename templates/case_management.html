@@ -175,13 +175,11 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <h6>Case Photo</h6>
-                                                <img src="{{ url_for('static', filename=result.case.image_path) }}" 
-                                                     class="img-fluid rounded" alt="Case Photo">
+                                                <img src="{{ url_for('uploaded_file', filename=result.case.image_path) }}" class="img-fluid rounded" alt="Case Photo">
                                             </div>
                                             <div class="mb-3">
                                                 <h6>Search Photo</h6>
-                                                <img src="{{ url_for('static', filename=result.match.found_image_path) }}" 
-                                                     class="img-fluid rounded" alt="Search Photo">
+                                                <img src="{{ url_for('uploaded_file', filename=result.match.found_image_path) }}" class="img-fluid rounded" alt="Search Photo">
                                             </div>
                                         </div>
                                     </div>
