@@ -140,8 +140,7 @@
                                         <span class="badge bg-warning">{{ match.status }}</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-success" 
-                                                onclick="reviewMatch({{ match.id }})">Review</button>
+                                        <button class="btn btn-sm btn-outline-success" onclick="reviewMatch('{{ match.id }}')">Review</button>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -149,7 +148,7 @@
                         </table>
                     </div>
                 </div>
-
+                
                 <!-- Search Results Tab -->
                 {% if search_results %}
                 <div class="tab-pane fade" id="search">

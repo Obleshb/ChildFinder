@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from flask import current_app
 from app import login_manager
 from models import User
+from models import db  # ✅ CORRECT
 from forms import LoginForm, RegistrationForm
 import logging
 

@@ -15,9 +15,6 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     is_authority = BooleanField('Register as Authority')
 
-    def validate_username(self, field):
-        if User.query.filter_by(username=field.data).first():
-            raise ValidationError('Username already in use.')
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
