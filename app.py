@@ -2,11 +2,10 @@ import os
 import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate  # ✅ Import Flask-Migrate
 from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase
-from dotenv import load_dotenv  # Import dotenv
-from flask import Flask, render_template, request, redirect, flash
-from flask_mail import Mail, Message
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
@@ -18,7 +17,7 @@ class Base(DeclarativeBase):
     pass
 
 # Initialize Flask extensions
-db = SQLAlchemy(model_class=Base)
+db = SQLAlchemy(model_class=Base)  # ✅ Define db before using it
 login_manager = LoginManager()
 
 # Create Flask app
@@ -38,7 +37,8 @@ app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER", "uploads")
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 
 # Initialize extensions with app
-db.init_app(app)
+db.init_app(app)  # ✅ Initialize db AFTER defining it
+migrate = Migrate(app, db)  # ✅ Initialize Flask-Migrate
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"
 
@@ -51,8 +51,6 @@ from routes import main_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
-
-
 
 # Create tables if they don't exist
 with app.app_context():

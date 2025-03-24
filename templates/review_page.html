@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Review Matched Case{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Review Matched Case</h2>
+    <div class="row">
+        <!-- Matched Case Details -->
+        <div class="col-md-6">
+            <h5>Matched Case</h5>
+            <p><strong>Case ID:</strong> #{{ case.id }}</p>
+            <p><strong>Child Name:</strong> {{ case.child_name }}</p>
+            <p><strong>Age:</strong> {{ case.age }}</p>
+            <p><strong>Last Seen:</strong> {{ case.location }}</p>
+            <p><strong>Date Missing:</strong> {{ case.date_missing.strftime('%Y-%m-%d') }}</p>
+            <img src="{{ url_for('uploaded_file', filename=case.image_path) }}" class="img-fluid rounded" alt="Case Photo">
+        </div>
+
+        <!-- Searched Image -->
+        <div class="col-md-6">
+            <h5>Searched Image</h5>
+            <img src="{{ url_for('uploaded_file', filename=match.found_image_path) }}" class="img-fluid rounded" alt="Searched Photo">
+        </div>
+    </div>
+
+    <!-- Confirm and Reject Buttons -->
+    <div class="mt-4">
+        <form action="{{ url_for('main.handle_match_decision', match_id=match.id) }}" method="POST" style="display:inline;">
+            <input type="hidden" name="decision" value="confirm">
+            <button type="submit" class="btn btn-success">Confirm</button>
+        </form>
+
+        <form action="{{ url_for('main.handle_match_decision', match_id=match.id) }}" method="POST" style="display:inline;">
+            <input type="hidden" name="decision" value="reject">
+            <button type="submit" class="btn btn-danger">Reject</button>
+        </form>
+    </div>
+
+    <!-- Back to Case Management -->
+    <a href="{{ url_for('main.case_management') }}" class="btn btn-primary mt-3">Back to Case Management</a>
+</div>
+{% endblock %}
+

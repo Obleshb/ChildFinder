@@ -41,6 +41,19 @@ class Case(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+class ReunitedCase(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    case_id = db.Column(db.Integer, db.ForeignKey('missing_case.id'), nullable=False)  # ✅ Correct table reference
+    child_name = db.Column(db.String(100), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    location = db.Column(db.String(255), nullable=False)
+    date_missing = db.Column(db.Date, nullable=False)
+    date_reunited = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    description = db.Column(db.Text, nullable=True)
+    image_path = db.Column(db.String(255), nullable=True)
+
+    case = db.relationship('Case', backref=db.backref('reunited_cases', lazy=True))  # ✅ Ensure correct relationship
+
 
 class MatchResult(db.Model):
     __tablename__ = 'match_result'
@@ -50,3 +63,5 @@ class MatchResult(db.Model):
     confidence_score = db.Column(db.Float)
     status = db.Column(db.String(20), default='pending')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
