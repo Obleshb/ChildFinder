@@ -9,61 +9,97 @@
             <div class="card shadow">
                 <div class="card-body p-4">
                     <h2 class="text-center mb-4">Report Missing Child</h2>
-                    <form method="POST" enctype="multipart/form-data" id="reportCaseForm">
-                        {{ form.hidden_tag() }}
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="child_name" class="form-label">Child's Name</label>
-                                {{ form.child_name(class="form-control") }}
-                                {% for error in form.child_name.errors %}
-                                    <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="age" class="form-label">Age</label>
-                                {{ form.age(class="form-control") }}
-                                {% for error in form.age.errors %}
-                                    <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-12">
-                                <label for="location" class="form-label">Last Known Location</label>
-                                {{ form.location(class="form-control") }}
-                                {% for error in form.location.errors %}
-                                    <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="date_missing" class="form-label">Date Missing</label>
-                                {{ form.date_missing(class="form-control") }}
-                                {% for error in form.date_missing.errors %}
-                                    <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-12">
-                                <label for="description" class="form-label">Description</label>
-                                {{ form.description(class="form-control", rows="4") }}
-                                {% for error in form.description.errors %}
-                                    <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-12">
-                                <label for="image" class="form-label">Upload Photo</label>
-                                {{ form.image(class="form-control") }}
-                                {% for error in form.image.errors %}
-                                    <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
-                                <div class="form-text">Please upload a clear, recent photo of the child.</div>
-                            </div>
-                            <div class="col-12">
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
-                                        Submit Report
-                                    </button>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if existing_case %}
+                        <div class="alert alert-danger">
+                            ⚠️ A case with this child already exists!
+                            <a href="{{ url_for('main.case_detail', case_id=existing_case.id) }}" 
+                               class="btn btn-danger btn-sm">Show Details</a>
+                        </div>
+                    {% else %}
+                        <form method="POST" enctype="multipart/form-data" id="reportCaseForm">
+                            {{ form.hidden_tag() }}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="child_name" class="form-label">Child's Name</label>
+                                    {{ form.child_name(class="form-control") }}
+                                    {% for error in form.child_name.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="age" class="form-label">Age</label>
+                                    {{ form.age(class="form-control") }}
+                                    {% for error in form.age.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-12">
+                                    <label for="location" class="form-label">Last Known Location</label>
+                                    {{ form.location(class="form-control") }}
+                                    {% for error in form.location.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="date_missing" class="form-label">Date Missing</label>
+                                    {{ form.date_missing(class="form-control") }}
+                                    {% for error in form.date_missing.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-12">
+                                    <label for="description" class="form-label">Description</label>
+                                    {{ form.description(class="form-control", rows="4") }}
+                                    {% for error in form.description.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <!-- ✅ Show Parent Details Only If Reported by Authority -->
+                                {% if current_user.is_authority %}
+                                <div class="col-md-6">
+                                    <label for="parent_name" class="form-label">Parent Name</label>
+                                    {{ form.parent_name(class="form-control") }}
+                                    {% for error in form.parent_name.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="parent_contact" class="form-label">Parent Contact</label>
+                                    {{ form.parent_contact(class="form-control") }}
+                                    {% for error in form.parent_contact.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                <div class="col-12">
+                                    <label for="image" class="form-label">Upload Photo</label>
+                                    {{ form.image(class="form-control") }}
+                                    {% for error in form.image.errors %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                    <div class="form-text">Please upload a clear, recent photo of the child.</div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                            Submit Report
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

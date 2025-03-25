@@ -4,86 +4,83 @@
 
 {% block content %}
 <div class="container">
-    <div class="row mb-4">
-        <div class="col">
-            <h2>Case Details: {{ case.child_name }}</h2>
-            <span class="badge bg-{{ 'success' if case.status == 'found' else 'warning' }}">
-                {{ case.status.title() }}
-            </span>
+    <h2>Case Details: {{ case.child_name }}</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Case Information</h5>
+            <p><strong>Child Name:</strong> {{ case.child_name }}</p>
+            <p><strong>Age:</strong> {{ case.age }}</p>
+            <p><strong>Location:</strong> {{ case.location }}</p>
+            <p><strong>Missing Since:</strong> {{ case.date_missing.strftime('%Y-%m-%d') }}</p>
+            <p><strong>Status:</strong> <span class="badge bg-warning">{{ case.status }}</span></p>
+            <p><strong>Description:</strong> {{ case.description }}</p>
+
+            <h5 class="mt-4">Reported By</h5>
+            <p><strong>Name:</strong> {{ reporter.username }}</p>
+            <p><strong>Email:</strong> {{ reporter.email }}</p>
+            <p><strong>Role:</strong> 
+                {% if reporter.is_authority %}
+                    <span class="badge bg-danger">Authority</span>
+                {% else %}
+                    <span class="badge bg-secondary">Public User</span>
+                {% endif %}
+            </p>
+
+            <!-- ✅ Display Parent Details if Reported by Authority -->
+            {% if case.parent_name %}
+            <h5 class="mt-4">Parent Information</h5>
+            <p><strong>Parent Name:</strong> {{ case.parent_name }}</p>
+            <p><strong>Parent Contact:</strong> {{ case.parent_contact }}</p>
+            {% endif %}
+
+            <h5 class="mt-4">Uploaded Image</h5>
+            <img src="{{ url_for('uploaded_file', filename=case.image_path) }}" class="img-fluid rounded" alt="Case Image">
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <img src="{{ url_for('uploaded_file', filename=case.image_path) }}" class="card-img-top img-fluid" alt="{{ case.child_name }}"
-                style="height: 250px; object-fit: cover;">
-
-                <div class="card-body">
-                    <h5 class="card-title">Child Information</h5>
-                    <p class="card-text">
-                        <strong>Name:</strong> {{ case.child_name }}<br>
-                        <strong>Age:</strong> {{ case.age }}<br>
-                        <strong>Missing Since:</strong> {{ case.date_missing.strftime('%Y-%m-%d') }}<br>
-                        <strong>Last Seen:</strong> {{ case.location }}
-                    </p>
-                </div>
-            </div>
+    <!-- Potential Matches Section -->
+    {% if matches %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Potential Matches</h5>
         </div>
-        
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Description</h5>
-                    <p class="card-text">{{ case.description }}</p>
-                </div>
-            </div>
-
-            {% if current_user.is_authority %}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Potential Matches</h5>
-                </div>
-                <div class="card-body">
-                    {% if case.matches %}
-                        {% for match in case.matches %}
-                        <div class="match-item mb-3 p-3 border rounded">
-                            <div class="row align-items-center">
-                                <div class="col-md-3">
-                                    <img src="{{ url_for('uploaded_file', filename=case.image_path) }}" class="img-fluid rounded" alt="Found Image">
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="mb-1">
-                                        <strong>Confidence Score:</strong> 
-                                        {{ "%.2f"|format(match.confidence_score * 100) }}%
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>Status:</strong> 
-                                        <span class="badge bg-{{ 'success' if match.status == 'confirmed' else 'warning' }}">
-                                            {{ match.status }}
-                                        </span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Found on:</strong> 
-                                        {{ match.created_at.strftime('%Y-%m-%d %H:%M') }}
-                                    </p>
-                                </div>
-                                <div class="col-md-3 text-end">
-                                    {% if match.status == 'pending' %}
-                                    <button class="btn btn-success btn-sm mb-2">Confirm Match</button>
-                                    <button class="btn btn-danger btn-sm">Reject Match</button>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Match ID</th>
+                            <th>Confidence</th>
+                            <th>Matched Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for match in matches %}
+                        <tr>
+                            <td>#{{ match.id }}</td>
+                            <td>{{ "%.2f"|format(match.confidence_score * 100) }}%</td>
+                            <td>
+                                <img src="{{ url_for('uploaded_file', filename=match.found_image_path) }}" 
+                                     class="img-thumbnail" width="100">
+                            </td>
+                            <td>
+                                <a href="{{ url_for('main.review_match', match_id=match.id) }}" 
+                                   class="btn btn-sm btn-outline-success">Review Match</a>
+                            </td>
+                        </tr>
                         {% endfor %}
-                    {% else %}
-                        <p class="text-muted mb-0">No potential matches found yet.</p>
-                    {% endif %}
-                </div>
+                    </tbody>
+                </table>
             </div>
-            {% endif %}
         </div>
+    </div>
+    {% endif %}
+
+    <!-- Actions Section -->
+    <div class="mt-4">
+        <a href="{{ url_for('main.case_management') }}" class="btn btn-secondary">Back to Case Management</a>
     </div>
 </div>
 {% endblock %}

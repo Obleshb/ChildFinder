@@ -32,14 +32,17 @@ class Case(db.Model):
     image_path = db.Column(db.String(255))
     status = db.Column(db.String(20), default='open')
 
-    
+    # ✅ Link case to reporter
     reporter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    reporter_name = db.Column(db.String(100), nullable=False, default="Unknown")
-    reporter_phone = db.Column(db.String(20), nullable=False, default="0000000000")
-    reporter_relation = db.Column(db.String(50), nullable=False, default="Unknown")
+    reporter = db.relationship('User', backref=db.backref('cases', lazy=True))
+
+    # ✅ NEW: Parent Details (Only for cases filed by Authority)
+    parent_name = db.Column(db.String(100), nullable=True)
+    parent_contact = db.Column(db.String(20), nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
 class ReunitedCase(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, TextAreaField, IntegerField, DateField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from models import User
+from wtforms.validators import DataRequired, Optional
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -20,13 +21,18 @@ class RegistrationForm(FlaskForm):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
+
 class CaseReportForm(FlaskForm):
-    child_name = StringField('Child Name', validators=[DataRequired(), Length(max=100)])
+    child_name = StringField('Child Name', validators=[DataRequired()])
     age = IntegerField('Age', validators=[DataRequired()])
-    location = StringField('Last Known Location', validators=[DataRequired(), Length(max=200)])
+    location = StringField('Location', validators=[DataRequired()])
     date_missing = DateField('Date Missing', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    image = FileField('Child Photo', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[Optional()])
+    image = FileField('Upload Image', validators=[DataRequired()])
+
+    # ✅ NEW: Parent Details (Only shown if Authority is filing)
+    parent_name = StringField('Parent Name', validators=[Optional()])
+    parent_contact = StringField('Parent Contact', validators=[Optional()])
 
 class ImageUploadForm(FlaskForm):
     image = FileField('Upload Image', validators=[DataRequired()])

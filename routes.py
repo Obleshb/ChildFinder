@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 
 from app import app, db
-from models import Case, MatchResult, ReunitedCase
+from models import Case, MatchResult, ReunitedCase, User
 from forms import CaseReportForm, ImageUploadForm
 from face_detection import FaceDetector
 
@@ -19,6 +19,24 @@ def uploaded_file(filename):
 main_bp = Blueprint('main', __name__)
 face_detector = FaceDetector()
 logging.basicConfig(level=logging.INFO)
+
+@main_bp.route('/case_management')
+@login_required
+def case_management():
+    if not current_user.is_authority:
+        flash('Access denied. Authority privileges required.', 'error')
+        return redirect(url_for('main.dashboard'))
+
+    active_cases = Case.query.filter_by(status='open').all()
+    found_cases = Case.query.filter_by(status='found').all()
+    pending_matches = MatchResult.query.filter_by(status='pending').all()
+    reunited_cases = ReunitedCase.query.all()
+
+    return render_template('case_management.html',
+                           active_cases=active_cases,
+                           found_cases=found_cases,
+                           pending_matches=pending_matches,
+                           reunited_cases=reunited_cases)
 
 @main_bp.route('/review_match/<int:match_id>')
 @login_required
@@ -86,41 +104,69 @@ def report_case():
             os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             image.save(full_path)
 
-            case = Case(
+            # ✅ Check if a case with the same name and missing date exists
+            existing_case = Case.query.filter_by(child_name=form.child_name.data, date_missing=form.date_missing.data).first()
+
+            # ✅ Check if uploaded image matches any existing case
+            cases = Case.query.all()
+            for case in cases:
+                case_image_path = os.path.join(app.config['UPLOAD_FOLDER'], case.image_path)
+                if os.path.exists(case_image_path):
+                    similarity = face_detector.compare_faces(full_path, case_image_path)
+                    if similarity > 0.8:  # 80% similarity threshold
+                        existing_case = case  # Set the existing case for later use
+                        break
+
+            if existing_case:
+                # ✅ If an authority is reporting, show "Show Details" button
+                if current_user.is_authority:
+                    return render_template('report_case.html', form=form, existing_case=existing_case)
+
+                else:
+                    # ✅ If a normal user is reporting, show reporter name & email
+                    reporter = User.query.get(existing_case.reporter_id)
+                    flash(f"⚠️ This case has already been reported by {reporter.username} (Email: {reporter.email}).", "danger")
+                    return redirect(url_for('main.report_case'))
+
+            # ✅ If no duplicate is found, proceed with saving the new case
+            parent_name = form.parent_name.data if current_user.is_authority else None
+            parent_contact = form.parent_contact.data if current_user.is_authority else None
+
+            new_case = Case(
                 child_name=form.child_name.data,
                 age=form.age.data,
                 location=form.location.data,
                 date_missing=form.date_missing.data,
                 description=form.description.data,
                 image_path=image_filename,
-                reporter_id=current_user.id
+                reporter_id=current_user.id,
+                parent_name=parent_name,
+                parent_contact=parent_contact
             )
-            db.session.add(case)
+            db.session.add(new_case)
             db.session.commit()
-            flash('Case reported successfully', 'success')
+            flash('✅ Case reported successfully!', 'success')
             return redirect(url_for('main.dashboard'))
+
         except Exception as e:
             logging.error(f"Error reporting case: {str(e)}", exc_info=True)
-            flash(f'Error reporting case: {str(e)}', 'error')
-    return render_template('report_case.html', form=form)
+            flash(f'Error reporting case: {str(e)}', 'danger')
 
-@main_bp.route('/case_management')
+    return render_template('report_case.html', form=form, existing_case=None)
+
+
+@main_bp.route('/case/<int:case_id>')
 @login_required
-def case_management():
-    if not current_user.is_authority:
-        flash('Access denied. Authority privileges required.', 'error')
+def case_detail(case_id):
+    case = Case.query.get_or_404(case_id)
+    reporter = User.query.get(case.reporter_id)
+    matches = MatchResult.query.filter_by(case_id=case.id).all()
+
+    if not current_user.is_authority and case.reporter_id != current_user.id:
+        flash('Access denied.', 'error')
         return redirect(url_for('main.dashboard'))
 
-    active_cases = Case.query.filter_by(status='open').all()
-    found_cases = Case.query.filter_by(status='found').all()
-    pending_matches = MatchResult.query.filter_by(status='pending').all()
-    reunited_cases = ReunitedCase.query.all()
-
-    return render_template('case_management.html',
-                         active_cases=active_cases,
-                         found_cases=found_cases,
-                         pending_matches=pending_matches,
-                         reunited_cases=reunited_cases)
+    return render_template('case_detail.html', case=case, reporter=reporter, matches=matches)
 
 @main_bp.route('/search_database', methods=['POST'])
 @login_required
@@ -179,15 +225,6 @@ def search_database():
         logging.error(f"Error processing search: {str(e)}", exc_info=True)
         flash(f'Error processing search: {str(e)}', 'error')
         return redirect(url_for('main.case_management'))
-
-@main_bp.route('/case/<int:case_id>')
-@login_required
-def case_detail(case_id):
-    case = Case.query.get_or_404(case_id)
-    if not current_user.is_authority and case.reporter_id != current_user.id:
-        flash('Access denied.', 'error')
-        return redirect(url_for('main.dashboard'))
-    return render_template('case_detail.html', case=case)
 
 @main_bp.route('/about')
 def about():
