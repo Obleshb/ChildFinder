@@ -40,7 +40,7 @@ python -m venv venv
 source venv/bin/activate   # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 python app.py
-
+```
 ![Image](https://github.com/user-attachments/assets/9ddd52f4-b8ec-45e1-89dd-cb38e3b3373b)
 ![Image](https://github.com/user-attachments/assets/72c95785-8443-4fdf-a7a3-9811af62dc8c)
 ![Image](https://github.com/user-attachments/assets/1c2923db-c41d-4c8d-b571-a7bb002037dc)
